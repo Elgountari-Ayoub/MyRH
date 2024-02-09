@@ -6,15 +6,13 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
-import ma.youcode.myrh.dao.response.JwtAuthenticationResponse;
+import lombok.extern.slf4j.Slf4j;
 import ma.youcode.myrh.models.Role;
 import ma.youcode.myrh.models.User;
 import ma.youcode.myrh.repositories.UserRepository;
 import ma.youcode.myrh.services.JwtService;
 import ma.youcode.myrh.services.Oauth2Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Service
+@Slf4j
 public class Oauth2ServiceImpl implements Oauth2Service {
 
     private final PasswordEncoder passwordEncoder;
@@ -79,11 +78,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     }
 
     @Override
-    public void saveUserIfNotExist(User user) throws Exception {
+    public User saveUserIfNotExist(User user) throws Exception {
         if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
-            userRepository.save(user);
+           return  userRepository.save(user);
         }else {
-            throw new Exception("user already exist");
+            return userRepository.findByEmail(user.getEmail()).get();
         }
 
         //return JwtAuthenticationResponse.builder().token(jwt).build();
@@ -97,20 +96,16 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     }
 
     @Override
-    public String generateToken(String code) {
+    public String generateToken(String code) throws Exception {
         GoogleTokenResponse googleTokenResponse;
         String token ;
-        try {
+
             googleTokenResponse = getTokenResponse(code);
             var user = extractInfoUserFromPayload(googleTokenResponse);
-            saveUserIfNotExist(user);
-            token = jwtService.generateToken(user);
-        } catch (IOException e) {
-                throw  new RuntimeException(e);
-            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            var userSaved = saveUserIfNotExist(user);;
+
+            token = jwtService.generateToken(userSaved);
+            log.info(token);
         return token;
     }
 

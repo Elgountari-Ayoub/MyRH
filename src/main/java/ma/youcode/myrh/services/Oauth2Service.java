@@ -12,10 +12,9 @@ public interface Oauth2Service {
     public GoogleTokenResponse getTokenResponse(String code) throws IOException;
     public User extractInfoUserFromPayload(GoogleTokenResponse response);
     public String generateLinkOfGoogleForm();
-    public void saveUserIfNotExist(User user) throws Exception;
+    public User saveUserIfNotExist(User user) throws Exception;
 
     public GoogleIdToken.Payload extractPayload(GoogleTokenResponse token) throws IOException;
-
-    public String generateToken(String code);
+    public String generateToken(String code) throws Exception;
 
 }

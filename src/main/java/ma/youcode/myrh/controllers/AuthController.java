@@ -50,21 +50,10 @@ public class AuthController {
      }
 
      @GetMapping("/auth/callback")
-     public ResponseEntity<String> callback(@RequestParam("code") String code)throws URISyntaxException {
-//         GoogleTokenResponse googleTokenResponse;
-//         JwtAuthenticationResponse token = null;
-//         try {
-//             googleTokenResponse = oauth2Service.getTokenResponse(code);
-//             var user = oauth2Service.extractInfoUserFromPayload(googleTokenResponse);
-//             token = oauth2Service.saveUserIfNotExist(user);
-//         } catch (IOException e) {
-//             System.err.println(e.getMessage());
-//             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//         } catch (Exception e) {
-//             throw new RuntimeException(e);
-//         }
-
-         return ResponseEntity.ok(oauth2Service.generateToken(code));
+     public ResponseEntity<String> callback(@RequestParam("code") String code) throws Exception {
+        String token = oauth2Service.generateToken(code);
+        log.info(token);
+         return ResponseEntity.status(HttpStatus.OK).body(token);
 
      }
 
