@@ -18,13 +18,12 @@ public class MyrhApplication {
         SpringApplication.run(MyrhApplication.class, args);
     }
 	@Bean
-    CommandLineRunner start(AgentService agentService, UserRepository userRepository, PasswordEncoder passwordEncoder){
+    CommandLineRunner start(AgentService agentService, UserRepository userRepository){
 		return args -> {
 			AgentDTO agentDTO = new AgentDTO();
 			agentDTO.setName("Agent PM");
 			agentDTO.setEmail("elgountariayoub21@gmail.com");
-            String password = passwordEncoder.encode("agentpassword");
-			agentDTO.setPassword(password);
+			agentDTO.setPassword("agent2024");
 			agentService.save(agentDTO);
 //            userRepository.save(agentDTO);
 		};
