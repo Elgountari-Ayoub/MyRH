@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-//@DiscriminatorValue("RECRUITER")
 public class Recruiter extends User{
 
     private String login;

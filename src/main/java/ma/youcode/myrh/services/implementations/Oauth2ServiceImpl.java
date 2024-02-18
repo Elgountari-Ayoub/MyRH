@@ -7,11 +7,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import lombok.extern.slf4j.Slf4j;
+import ma.youcode.myrh.models.JobSeeker;
 import ma.youcode.myrh.models.Role;
 import ma.youcode.myrh.models.User;
+import ma.youcode.myrh.repositories.IJobSeekerRepository;
 import ma.youcode.myrh.repositories.UserRepository;
 import ma.youcode.myrh.services.JwtService;
 import ma.youcode.myrh.services.Oauth2Service;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,11 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository ;
+
+    @Autowired
+    private IJobSeekerRepository jobSeekerRepository;
+    @Autowired
+    private  ModelMapper modelMapper;
 
     private final JwtService jwtService ;
 
@@ -80,7 +89,10 @@ public class Oauth2ServiceImpl implements Oauth2Service {
     @Override
     public User saveUserIfNotExist(User user) throws Exception {
         if (userRepository.findByEmail(user.getEmail()).isEmpty()) {
-           return  userRepository.save(user);
+//          return userRepository.save(user);
+            JobSeeker jobSeeker = modelMapper.map(user, JobSeeker.class);
+            jobSeekerRepository.save(jobSeeker);
+            return user;
         }else {
             return userRepository.findByEmail(user.getEmail()).get();
         }
@@ -102,7 +114,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
 
             googleTokenResponse = getTokenResponse(code);
             var user = extractInfoUserFromPayload(googleTokenResponse);
-            var userSaved = saveUserIfNotExist(user);;
+            var userSaved = saveUserIfNotExist(user);
 
             token = jwtService.generateToken(userSaved);
             log.info(token);
