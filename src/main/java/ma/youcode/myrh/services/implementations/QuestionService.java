@@ -27,15 +27,15 @@ public class QuestionService implements IQuestionService {
     public QuestionDTO save(QuestionDTO questionDTO) {
 
 
-        ProfileDTO profileOptional = profileService.findByTitle(questionDTO.getProfileDTO().getTitle());
-        if (profileOptional != null) {
-            Profile profile = modelMapper.map(questionDTO.getProfileDTO(), Profile.class);
-            Question question = modelMapper.map(questionDTO, Question.class);
-            questionRepository.save(question);
-            return questionDTO;
-        } else {
+//        ProfileDTO profileOptional = profileService.findByTitle(questionDTO.getProfileDTO().getTitle());
+//        if (profileOptional != null) {
+//            Profile profile = modelMapper.map(questionDTO.getProfileDTO(), Profile.class);
+//            Question question = modelMapper.map(questionDTO, Question.class);
+//            questionRepository.save(question);
+//            return questionDTO;
+//        } else {
             return null;
-        }
+//        }
 
     }
 

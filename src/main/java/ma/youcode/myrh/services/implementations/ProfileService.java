@@ -2,19 +2,12 @@ package ma.youcode.myrh.services.implementations;
 
 import ma.youcode.myrh.dtos.ProfileDTO;
 import ma.youcode.myrh.dtos.QuestionDTO;
-import ma.youcode.myrh.dtos.ResumeDTO;
 import ma.youcode.myrh.models.*;
-import ma.youcode.myrh.repositories.IJobOfferRepository;
 import ma.youcode.myrh.repositories.IProfileRepository;
-import ma.youcode.myrh.repositories.IResumeRepository;
-import ma.youcode.myrh.repositories.UserRepository;
-import ma.youcode.myrh.services.FilesStorageService;
 import ma.youcode.myrh.services.IProfileService;
-import ma.youcode.myrh.services.IResumeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +34,17 @@ public class ProfileService implements IProfileService {
     }
 
     @Override
-    public List<ProfileDTO> findAll() {
+    public List<Profile> findAll() {
         List<Profile> profiles = profileRepository.findAll();
-        return profiles.stream()
-                .map(profile -> modelMapper.map(profile, ProfileDTO.class)).collect(Collectors.toList());
+        return profiles;
+//        return profiles.stream()
+//                .map(profile -> modelMapper.map(profile, ProfileDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public ProfileDTO findByTitle(String title) {
         Optional<Profile> profileOptional = profileRepository.findByTitle(title);
-        if (profileOptional.isPresent()){
+        if (profileOptional.isPresent()) {
             Profile profile = profileOptional.get();
             System.out.println(profileOptional.get());
             System.out.println("profile");

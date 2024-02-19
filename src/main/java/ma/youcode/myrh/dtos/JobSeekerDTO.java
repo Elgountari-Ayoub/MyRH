@@ -9,6 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class JobSeekerDTO {
-    private List<Profile> profiles = new ArrayList<>();
+public class JobSeekerDTO extends UserDTO{
+//    private List<Profile> profiles;
 }

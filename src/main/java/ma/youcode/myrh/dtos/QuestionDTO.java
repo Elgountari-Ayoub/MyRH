@@ -13,5 +13,5 @@ public class QuestionDTO {
     private String content;
     private Boolean answer;
 
-    private ProfileDTO profileDTO;
+//    private ProfileDTO profileDTO;
 }

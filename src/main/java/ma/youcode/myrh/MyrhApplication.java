@@ -4,6 +4,7 @@ package ma.youcode.myrh;
 import ma.youcode.myrh.dtos.AgentDTO;
 import ma.youcode.myrh.dtos.ProfileDTO;
 import ma.youcode.myrh.dtos.QuestionDTO;
+import ma.youcode.myrh.models.JobSeeker;
 import ma.youcode.myrh.models.Profile;
 import ma.youcode.myrh.repositories.UserRepository;
 import ma.youcode.myrh.services.implementations.AgentService;
@@ -28,12 +29,18 @@ public class MyrhApplication {
 			ModelMapper modelMapper,
 			AgentService agentService, ProfileService profileService, QuestionService questionService){
 		return args -> {
-			AgentDTO agentDTO = new AgentDTO();
-			agentDTO.setName("Agent PM");
-			agentDTO.setEmail("elgountariayoub21@gmail.com");
-			agentDTO.setPassword("agent2024");
-			agentDTO.setRole("AGENT");
-			agentService.save(agentDTO);
+//			AgentDTO agentDTO = new AgentDTO();
+//			agentDTO.setName("Agent PM");
+//			agentDTO.setEmail("elgountariayoub21@gmail.com");
+//			agentDTO.setPassword("agent2024");
+//			agentDTO.setRole("AGENT");
+//			agentService.save(agentDTO);
+
+//			ProfileDTO profileDTO = profileService.findByTitle("Java Developer");
+//
+//			JobSeeker jobSeeker = new JobSeeker();
+//			jobSeeker.setName("");
+
 
 //			//Create a profile
 //			ProfileDTO profileDTO = new ProfileDTO();
