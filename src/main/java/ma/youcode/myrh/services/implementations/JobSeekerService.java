@@ -45,4 +45,22 @@ public class JobSeekerService implements IJobSeekerService {
         jobSeeker = jobSeekerRepository.save(jobSeeker);
         return modelMapper.map(jobSeeker, JobSeekerDTO.class);
     }
+
+    @Override
+    public JobSeekerProfilesDTO findById(Long id) {
+        JobSeeker jobSeeker = jobSeekerRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("job seeker not found"));
+        return modelMapper.map(jobSeeker, JobSeekerProfilesDTO.class);
+    }
+
+    @Override
+    public JobSeekerProfilesDTO findByEmail(String email) {
+        Optional<JobSeeker> jobSeekerOptional = jobSeekerRepository.findByEmail(email);
+        if (jobSeekerOptional.isPresent()){
+            return modelMapper.map(jobSeekerOptional.get(), JobSeekerProfilesDTO.class);
+        }else {
+            throw new EntityNotFoundException("job seeker not found");
+        }
+
+    }
 }

@@ -1,17 +1,28 @@
 package ma.youcode.myrh.controllers;
 
 
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import ma.youcode.myrh.dtos.JobOfferDTO;
+import ma.youcode.myrh.dtos.JobSeekerProfilesDTO;
 import ma.youcode.myrh.dtos.ResumeDTO;
+import ma.youcode.myrh.models.JobSeeker;
 import ma.youcode.myrh.models.Status;
+import ma.youcode.myrh.repositories.IJobSeekerRepository;
 import ma.youcode.myrh.services.IJobOfferService;
+import ma.youcode.myrh.services.IJobSeekerService;
+import ma.youcode.myrh.services.JwtService;
+import ma.youcode.myrh.services.UserService;
 import ma.youcode.myrh.services.implementations.JobOfferService;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Enumeration;
 import java.util.List;
 
 @RequestMapping("api/v1/jobOffers")
@@ -22,11 +33,13 @@ public class JobOfferController {
     @Autowired
     IJobOfferService jobOfferService;
 
+
     @GetMapping()
     public ResponseEntity<List<JobOfferDTO>> getAll() {
         List<JobOfferDTO> jobOffers = jobOfferService.findAll();
         return ResponseEntity.ok(jobOffers);
     }
+
     @GetMapping("/byUser/{id}")
     public ResponseEntity<List<JobOfferDTO>> getAllByUser(
             @PathVariable long id
@@ -65,11 +78,11 @@ public class JobOfferController {
         String response = jobOfferService.updateStatus(jobOfferId, Status.valueOf(newStatus));
         return ResponseEntity.ok(response);
     }
-
     @GetMapping("/status={status}")
     public ResponseEntity<List<JobOfferDTO>> searchByStatus(
-            @PathVariable String status) {
-        List<JobOfferDTO> jobOfferDTOList = jobOfferService.findAllByStatus(status);
+            @PathVariable String status, HttpServletRequest request) {
+
+        List<JobOfferDTO> jobOfferDTOList = jobOfferService.findAllByStatus(status, request);
         return ResponseEntity.ok(jobOfferDTOList);
     }
 

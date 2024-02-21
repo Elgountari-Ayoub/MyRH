@@ -1,17 +1,18 @@
 package ma.youcode.myrh.services.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import ma.youcode.myrh.dtos.JobOfferDTO;
+import ma.youcode.myrh.dtos.JobSeekerProfilesDTO;
 import ma.youcode.myrh.dtos.RecruiterDTO;
 import ma.youcode.myrh.dtos.ResumeDTO;
-import ma.youcode.myrh.models.JobOffer;
-import ma.youcode.myrh.models.Recruiter;
-import ma.youcode.myrh.models.Resume;
-import ma.youcode.myrh.models.Status;
+import ma.youcode.myrh.models.*;
 import ma.youcode.myrh.repositories.IJobOfferRepository;
 import ma.youcode.myrh.repositories.IRecruiterRepository;
 import ma.youcode.myrh.repositories.IResumeRepository;
 import ma.youcode.myrh.services.IJobOfferService;
+import ma.youcode.myrh.services.IJobSeekerService;
+import ma.youcode.myrh.services.JwtService;
 import ma.youcode.myrh.utils.EmailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,10 @@ public class JobOfferService implements IJobOfferService {
     IResumeRepository resumeRepository;
     @Autowired
     IRecruiterRepository recruiterRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    IJobSeekerService jobSeekerService;
     @Autowired
     ModelMapper modelMapper;
 
@@ -89,8 +94,25 @@ public class JobOfferService implements IJobOfferService {
     }
 
     @Override
-    public List<JobOfferDTO> findAllByStatus(String status) {
-        List<JobOffer> jobOffers = jobOfferRepository.findByStatus(Enum.valueOf(Status.class, status));
+    public List<JobOfferDTO> findAllByStatus(String status, HttpServletRequest request) {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        String userEmail;
+        jwt = authHeader.substring(7);
+        userEmail = jwtService.extractUserName(jwt);
+
+        JobSeekerProfilesDTO jobSeekerProfilesDTO = jobSeekerService.findByEmail(userEmail);
+            List<JobOffer> jobOffers = jobOfferRepository.findByStatus(Enum.valueOf(Status.class, status));
+        if (!jobSeekerProfilesDTO.getProfiles().isEmpty()) {
+
+            return jobOffers.stream()
+                    .filter(jobOffer -> jobSeekerProfilesDTO.getProfiles().stream()
+                            .anyMatch(profile -> profile.getTitle().equals(jobOffer.getProfile())))
+
+                    .map(jobOffer -> modelMapper.map(jobOffer, JobOfferDTO.class))
+                    .collect(Collectors.toList());
+        }
+
         return jobOffers.stream()
                 .map(jobOffer -> modelMapper.map(jobOffer, JobOfferDTO.class))
                 .collect(Collectors.toList());

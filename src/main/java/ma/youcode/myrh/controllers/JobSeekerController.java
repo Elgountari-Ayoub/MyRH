@@ -2,6 +2,7 @@ package ma.youcode.myrh.controllers;
 
 
 import ma.youcode.myrh.dtos.JobSeekerDTO;
+import ma.youcode.myrh.dtos.JobSeekerProfilesDTO;
 import ma.youcode.myrh.dtos.JobSeeker_ProfileDTO;
 import ma.youcode.myrh.dtos.ProfileDTO;
 import ma.youcode.myrh.models.JobSeeker;
@@ -18,17 +19,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class JobSeekerController {
     @Autowired
-    JobSeekerService jobSeekerService;
+    IJobSeekerService jobSeekerService;
 
     @PostMapping("/addProfile")
     public ResponseEntity<JobSeekerDTO> addProfile(@RequestBody JobSeeker_ProfileDTO jobSeeker_profileDTO) {
         return ResponseEntity.ok(jobSeekerService.addProfile(jobSeeker_profileDTO));
     }
-//    @GetMapping()
-//    public ResponseEntity<List<JobSeekerDTO>> getAll(Pageable pageable) {
-//        Page<RecruiterDTO> recruiters = recruiterService.findAll(pageable);
-//        return ResponseEntity.ok(recruiters);
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<JobSeekerProfilesDTO> findById(@PathVariable Long id) {
+        JobSeekerProfilesDTO jobSeekerProfilesDTO  = jobSeekerService.findById(id);
+        return ResponseEntity.ok(jobSeekerProfilesDTO);
+    }
 
 
 

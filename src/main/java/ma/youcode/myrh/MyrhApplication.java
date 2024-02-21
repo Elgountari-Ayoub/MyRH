@@ -29,12 +29,12 @@ public class MyrhApplication {
 			ModelMapper modelMapper,
 			AgentService agentService, ProfileService profileService, QuestionService questionService){
 		return args -> {
-//			AgentDTO agentDTO = new AgentDTO();
-//			agentDTO.setName("Agent PM");
-//			agentDTO.setEmail("elgountariayoub21@gmail.com");
-//			agentDTO.setPassword("agent2024");
-//			agentDTO.setRole("AGENT");
-//			agentService.save(agentDTO);
+			AgentDTO agentDTO = new AgentDTO();
+			agentDTO.setName("Agent PM");
+			agentDTO.setEmail("agent@gmail.com");
+			agentDTO.setPassword("agent2024");
+			agentDTO.setRole("AGENT");
+			agentService.save(agentDTO);
 
 //			ProfileDTO profileDTO = profileService.findByTitle("Java Developer");
 //

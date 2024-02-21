@@ -1,5 +1,6 @@
 package ma.youcode.myrh.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import ma.youcode.myrh.dtos.JobOfferDTO;
 import ma.youcode.myrh.dtos.JobOfferDTO;
 import ma.youcode.myrh.dtos.RecruiterDTO;
@@ -20,7 +21,7 @@ public interface IJobOfferService {
      List<JobOfferDTO> findAllByUserId(long userId);
 
 
-     List<JobOfferDTO> findAllByStatus(String status);
+     List<JobOfferDTO> findAllByStatus(String status, HttpServletRequest request);
 
      String updateStatus(long id, Status newStatus);
 }

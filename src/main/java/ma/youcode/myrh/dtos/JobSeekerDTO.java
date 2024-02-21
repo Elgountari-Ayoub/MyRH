@@ -10,5 +10,4 @@ import java.util.List;
 
 @Data
 public class JobSeekerDTO extends UserDTO{
-//    private List<Profile> profiles;
 }

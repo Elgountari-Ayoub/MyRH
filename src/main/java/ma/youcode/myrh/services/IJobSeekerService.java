@@ -1,15 +1,14 @@
 package ma.youcode.myrh.services;
 
-import ma.youcode.myrh.dtos.JobSeekerDTO;
-import ma.youcode.myrh.dtos.JobSeeker_ProfileDTO;
-import ma.youcode.myrh.dtos.ProfileDTO;
-import ma.youcode.myrh.dtos.ResumeDTO;
+import ma.youcode.myrh.dtos.*;
 import ma.youcode.myrh.models.ResumeStatus;
 
 import java.util.List;
 
 public interface IJobSeekerService {
      JobSeekerDTO addProfile(JobSeeker_ProfileDTO jobSeeker_profileDTO);
+     JobSeekerProfilesDTO findById(Long id);
+     JobSeekerProfilesDTO findByEmail(String email);
 //     ResumeDTO save(ResumeDTO jobOfferDTO, long jobfferId);
 //     ResumeDTO updateStatus(long id, ResumeStatus newStatus);
 //     List<ResumeDTO> findByJobOffer(long  id);
