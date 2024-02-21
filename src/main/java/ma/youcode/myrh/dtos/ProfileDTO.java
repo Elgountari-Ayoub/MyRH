@@ -15,6 +15,6 @@ import java.util.List;
 public class ProfileDTO{
     private Long id;
     private String title;
-    private List<JobSeeker> jobSeekers;
-    private List<Question> questions ;
+    private List<JobSeekerDTO> jobSeekers;
+    private List<QuestionDTO> questions ;
 }

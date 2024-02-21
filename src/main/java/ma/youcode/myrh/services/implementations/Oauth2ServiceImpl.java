@@ -71,7 +71,7 @@ public class Oauth2ServiceImpl implements Oauth2Service {
         var user = User.builder()
                 .email(payload.getEmail())
                 .name((String) payload.get("name"))
-                .role(Role.USER.name())
+                .role(Role.JOBSEEKER.name())
                 .password(passwordEncoder.encode("123456"))
                 .build();
         return user;

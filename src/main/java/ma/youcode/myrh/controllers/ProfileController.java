@@ -27,13 +27,19 @@ public class ProfileController {
     public ResponseEntity<ProfileDTO> create(@RequestBody ProfileDTO profileDTO) {
         return ResponseEntity.ok(profileService.save(profileDTO));
     }
+
+    @GetMapping("/{profileId}")
+    public ResponseEntity<ProfileDTO> getById(@PathVariable Long profileId) {
+        ProfileDTO profile = profileService.findByID(profileId);
+        return ResponseEntity.ok(profile);
+    }
+
     @GetMapping()
-    public ResponseEntity<List<Profile>> getAll() {
-        List<Profile> profiles = profileService.findAll();
+    public ResponseEntity<List<ProfileDTO>> getAll() {
+        List<ProfileDTO> profiles = profileService.findAll();
         System.out.println(profiles);
         return ResponseEntity.ok(profiles);
     }
-
 
 
 }

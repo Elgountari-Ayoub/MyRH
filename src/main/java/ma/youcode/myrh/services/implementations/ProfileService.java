@@ -1,5 +1,6 @@
 package ma.youcode.myrh.services.implementations;
 
+import ma.youcode.myrh.dtos.JobSeekerDTO;
 import ma.youcode.myrh.dtos.ProfileDTO;
 import ma.youcode.myrh.dtos.QuestionDTO;
 import ma.youcode.myrh.models.*;
@@ -34,11 +35,31 @@ public class ProfileService implements IProfileService {
     }
 
     @Override
-    public List<Profile> findAll() {
+    public List<ProfileDTO> findAll() {
         List<Profile> profiles = profileRepository.findAll();
-        return profiles;
-//        return profiles.stream()
-//                .map(profile -> modelMapper.map(profile, ProfileDTO.class)).collect(Collectors.toList());
+        return profiles.stream()
+                .map(this::mapToProfileDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ProfileDTO mapToProfileDTO(Profile profile) {
+        ProfileDTO profileDTO = new ProfileDTO();
+        profileDTO.setId(profile.getId());
+        profileDTO.setTitle(profile.getTitle());
+
+        List<JobSeekerDTO> jobSeekerDTOs = profile.getJobSeekers().stream()
+                .map(jobSeeker -> modelMapper.map(jobSeeker, JobSeekerDTO.class))
+                .collect(Collectors.toList());
+
+        profileDTO.setJobSeekers(jobSeekerDTOs);
+
+        List<QuestionDTO> questionDTOs = profile.getQuestions().stream()
+                .map(question -> modelMapper.map(question, QuestionDTO.class))
+                .collect(Collectors.toList());
+
+        profileDTO.setQuestions(questionDTOs);
+
+        return profileDTO;
     }
 
     @Override
@@ -51,6 +72,12 @@ public class ProfileService implements IProfileService {
             return modelMapper.map(profile, ProfileDTO.class);
         }
         return null;
+    }
+
+    @Override
+    public ProfileDTO findByID(Long id) {
+        Optional<Profile> profileOptional = profileRepository.findById(id);
+        return profileOptional.map(this::mapToProfileDTO).orElse(null);
     }
 
     @Override

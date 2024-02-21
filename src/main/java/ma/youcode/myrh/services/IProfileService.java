@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface IProfileService {
      ProfileDTO save(ProfileDTO jobOfferDTO);
-     List<Profile> findAll();
+     List<ProfileDTO> findAll();
      ProfileDTO findByTitle(String title);
+     ProfileDTO findByID(Long id);
      ProfileDTO addQuestion(ProfileDTO profileDTO, QuestionDTO questionDTO);
 }
