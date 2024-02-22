@@ -10,10 +10,12 @@ import ma.youcode.myrh.models.*;
 import ma.youcode.myrh.repositories.IJobOfferRepository;
 import ma.youcode.myrh.repositories.IRecruiterRepository;
 import ma.youcode.myrh.repositories.IResumeRepository;
+import ma.youcode.myrh.repositories.UserRepository;
 import ma.youcode.myrh.services.IJobOfferService;
 import ma.youcode.myrh.services.IJobSeekerService;
 import ma.youcode.myrh.services.JwtService;
 import ma.youcode.myrh.utils.EmailService;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -93,24 +95,41 @@ public class JobOfferService implements IJobOfferService {
                 .collect(Collectors.toList());
     }
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     public List<JobOfferDTO> findAllByStatus(String status, HttpServletRequest request) {
+        List<JobOffer> jobOffers = jobOfferRepository.findByStatus(Enum.valueOf(Status.class, status));
+
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         String userEmail;
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUserName(jwt);
+        if (authHeader.length() >= 7) {
+            jwt = authHeader.substring(7);
+            if (!StringUtils.isEmpty(authHeader) || StringUtils.startsWith(authHeader, "Bearer ")) {
+                userEmail = jwtService.extractUserName(jwt);
+                var user = userRepository.findByEmail(userEmail)
+                        .orElseThrow(() -> new IllegalArgumentException("user not found"));
+                if (user.getRole().equals("JOBSEEKER")) {
 
-        JobSeekerProfilesDTO jobSeekerProfilesDTO = jobSeekerService.findByEmail(userEmail);
-            List<JobOffer> jobOffers = jobOfferRepository.findByStatus(Enum.valueOf(Status.class, status));
-        if (!jobSeekerProfilesDTO.getProfiles().isEmpty()) {
 
-            return jobOffers.stream()
-                    .filter(jobOffer -> jobSeekerProfilesDTO.getProfiles().stream()
-                            .anyMatch(profile -> profile.getTitle().equals(jobOffer.getProfile())))
+                    JobSeekerProfilesDTO jobSeekerProfilesDTO = jobSeekerService.findByEmail(userEmail);
 
-                    .map(jobOffer -> modelMapper.map(jobOffer, JobOfferDTO.class))
-                    .collect(Collectors.toList());
+                    if (!jobSeekerProfilesDTO.getProfiles().isEmpty()) {
+
+                        return jobOffers.stream()
+                                .filter(jobOffer -> jobSeekerProfilesDTO.getProfiles().stream()
+                                        .anyMatch(profile -> profile.getTitle().equals(jobOffer.getProfile())))
+
+                                .map(jobOffer -> modelMapper.map(jobOffer, JobOfferDTO.class))
+                                .collect(Collectors.toList());
+                    }
+
+                }
+
+            }
         }
 
         return jobOffers.stream()
